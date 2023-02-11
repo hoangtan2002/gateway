@@ -10,7 +10,7 @@ def getPort():
         if "USB Serial Device" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
-    return "/dev/pts/1"
+    return "/dev/pts/3"
 
 if getPort()!="None":
     ser = serial.Serial( port=getPort(), baudrate=9600)
@@ -38,6 +38,10 @@ def processData(client, data):
     print(splitData)
     if splitData[1]=='T':
         client.publish("sensor01", splitData[2])
+    elif splitData[1]=='H':
+        client.publish("sensor02", splitData[2])
+    else:
+        client.publish("sensor03", splitData[2])
  
 def writeData(data):
     ser.write(str(data).encode())

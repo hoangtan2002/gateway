@@ -1,4 +1,4 @@
 keyed_file
 keras*
-*pycache*
+__pycache__/*
 labels.txt
