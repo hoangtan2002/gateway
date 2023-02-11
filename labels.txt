@@ -1,0 +1,3 @@
+0 Có khẩu trang
+1 Không khẩu trang
+2 Không có người
