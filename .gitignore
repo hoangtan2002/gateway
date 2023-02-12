@@ -2,3 +2,4 @@ keyed_file
 keras*
 __pycache__/*
 labels.txt
+log.txt
