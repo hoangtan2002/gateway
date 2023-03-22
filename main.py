@@ -42,9 +42,9 @@ client.on_message = message
 client.on_subscribe = subscribe
 client.connect()
 client.loop_background()
-
 counter = 10
 
+curTime = time.process_time()
 while True:
     #counter = counter - 1
     #if counter == 0: 
@@ -59,6 +59,9 @@ while True:
         # client.publish("sensor03", lightval)
         # client.publish("ai", ai_result)
         #counter = 10
+    if time.process_time() - curTime >= 90 :
+        writeData('!RST#')
+        curTime = time.process_time()
     readSerial(client)
     #
     #time.sleep(1)

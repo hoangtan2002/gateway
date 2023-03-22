@@ -11,7 +11,7 @@ def getPort():
         if "USB Serial Device" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
-    return "/dev/pts/1"
+    return "/dev/ttyUSB0"
 
 if getPort()!="None":
     ser = serial.Serial( port=getPort(), baudrate=9600)
@@ -37,15 +37,21 @@ def processData(client, data):
     data = data.replace("#", "")
     splitData = data.split(":")
     print(splitData)
+    if len(splitData) < 2:
+        return
     if splitData[1]=='T':
-        client.publish("sensor01", splitData[2])
         writelog((" Temp: " + str(splitData[2])))
-    elif splitData[1]=='H':
-        client.publish("sensor02", splitData[2])
-        writelog((" Humidity: " + str(splitData[2])))
-    else:
-        client.publish("sensor03", splitData[2])
-        writelog((" Lumi: " + str(splitData[2])))
+        if int(splitData[2]) > 0 and int(splitData[2]) < 50:
+            writeData('!OK#')
+            client.publish("sensor01", splitData[2])
+        else:
+            print("DATA ISSUE!")
+    # elif splitData[1]=='H':
+    #     client.publish("sensor02", splitData[2])
+    #     writelog((" Humidity: " + str(splitData[2])))
+    # else:
+    #     client.publish("sensor03", splitData[2])
+    #     writelog((" Lumi: " + str(splitData[2])))
  
 def writeData(data):
     ser.write(str(data).encode())
