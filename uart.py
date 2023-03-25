@@ -2,7 +2,7 @@ import serial.tools.list_ports
 from log import * 
 INIT=0
 MCU_CONNECTED=1
-MCU_DISCONNECTED=0
+MCU_DISCONNECTED=2
 MCU_MAX_CONNECT_ATTEMP=3
 global state
 
@@ -35,6 +35,7 @@ def readSerial(client):
     try:
         bytesToRead = ser.inWaiting()
     except:
+        client.publish('sensor03',"MCU DISCONNECTED")
         return MCU_DISCONNECTED
     if (bytesToRead > 0):
         global mess
@@ -47,7 +48,7 @@ def readSerial(client):
                 mess = ""
             else:
                 mess = mess[end+1:]
-        return MCU_CONNECTED
+    return MCU_CONNECTED
                 
 def processData(client, data):
     data = data.replace("!", "")
