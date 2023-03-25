@@ -35,6 +35,5 @@ while True:
             writeData('!RST#')
             curTime = time.process_time()
             sendPeriod = getSendPeriod()
-            sendPeriod = getSendPeriod()
     state=readSerial(client)
     pass
