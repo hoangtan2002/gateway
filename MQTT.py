@@ -3,14 +3,18 @@ import sys
 from uart import *
 
 KEYFILE = open("./keyed_file", "r")
-AIO_FEED_ID = ["button01", "button02"]
+AIO_FEED_ID = ["button01", "button02", "freq"]
 AIO_USERNAME = KEYFILE.readline().strip()
 AIO_KEY = KEYFILE.readline().strip()
 #CONSTANT
 isConnectedSuccessfully = 0
+sendPeriod = 10
 
 def isConnected():
     return isConnectedSuccessfully
+
+def getSendPeriod():
+    return sendPeriod
 
 def connected(client):
     global isConnectedSuccessfully
@@ -27,6 +31,7 @@ def disconnected(client):
     sys.exit (1)
 
 def message(client , feed_id , payload):
+    global sendPeriod
     print("Nhan du lieu: " + payload)
     if feed_id == "button01":
         if payload == "0":
@@ -38,6 +43,12 @@ def message(client , feed_id , payload):
             writeData("3")
         else: 
             writeData("4")
+    if feed_id == "freq":
+        data = payload.split(":")
+        if(len(data) == 1): return
+        else:
+            sendPeriod = int(data[1])
+            print(sendPeriod)
 
 client = MQTTClient(AIO_USERNAME , AIO_KEY)
 client.on_connect = connected

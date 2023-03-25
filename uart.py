@@ -20,17 +20,17 @@ def getPort():
 
 def connectSerial():
     global state, ser
-    try:
-        if getPort()!="None":
-            ser = serial.Serial(port=getPort(), baudrate=9600)
-            writelog("MCU CONNECTED!")
-            print(ser)
-            return MCU_CONNECTED
-    except:
+    if getPort()!="None":
+        ser = serial.Serial(port=getPort(), baudrate=9600)
+        writelog("MCU CONNECTED!")
+        print(ser)
+        return MCU_CONNECTED
+    else:
         writelog("CONNECTION ISSUE!")
         return INIT
         
 mess = ""
+
 def readSerial(client):
     try:
         bytesToRead = ser.inWaiting()

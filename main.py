@@ -16,20 +16,21 @@ while not isConnected():
     print()
     
 while numOfConnectionTry < MCU_MAX_CONNECT_ATTEMP and state == INIT:
-    if time.process_time()-curTime > 10: 
-        print('Connect Attempt Number:'+str(numOfConnectionTry))
-        state = connectSerial()
-        if state == INIT:
-            numOfConnectionTry = numOfConnectionTry+1
+    print('Connect Attempt Number:'+str(numOfConnectionTry))
+    state = connectSerial()
+    if state == INIT:
+        numOfConnectionTry = numOfConnectionTry+1
+    time.sleep(10)
 
 if state == INIT:
     client.publish("sensor03","MCU ISSUE")
     exit(1)
     
 while True:
-    if time.process_time() - curTime >= 10 :
+    if time.process_time() - curTime >= sendPeriod :
         writeData('!RST#')
         curTime = time.process_time()
+        sendPeriod = getSendPeriod()
     if readSerial(client)==MCU_DISCONNECTED:
         break
     pass
