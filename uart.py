@@ -1,10 +1,8 @@
 import serial.tools.list_ports
 from log import * 
-
 INIT=0
 MCU_CONNECTED=1
-state = INIT
-
+MCU_DISCONNECTED=0
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -24,10 +22,10 @@ def connectSerial():
             ser = serial.Serial(port=getPort(), baudrate=9600)
             writelog("MCU CONNECTED!")
             print(ser)
-            return 0
+            return MCU_CONNECTED
     except:
         writelog("CONNECTION ISSUE!")
-        return 1
+        return INIT
         
 mess = ""
 def readSerial(client):
@@ -35,7 +33,8 @@ def readSerial(client):
         bytesToRead = ser.inWaiting()
     except:
         client.publish("sensor03", "MCU DISCONNECTED")
-        return 1
+        writelog("MCU DISCONNECTED")
+        return MCU_DISCONNECTED
     if (bytesToRead > 0):
         global mess
         mess = mess + ser.read(bytesToRead).decode("UTF-8")
@@ -47,7 +46,7 @@ def readSerial(client):
                 mess = ""
             else:
                 mess = mess[end+1:]
-    return 0
+    return MCU_CONNECTED
                 
 def processData(client, data):
     data = data.replace("!", "")
