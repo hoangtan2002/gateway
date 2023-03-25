@@ -21,9 +21,10 @@ def getPort():
 
 def connectSerial():
     global state, ser
-    if getPort()!="None":
+    ttyPort = getPort()
+    if ttyPort!="None":
         try:
-            ser = serial.Serial(port=getPort(), baudrate=9600)
+            ser = serial.Serial(port=ttyPort, baudrate=9600)
         except:
             return MCU_DISCONNECTED
         writelog("MCU CONNECTED!")
@@ -68,7 +69,7 @@ def processData(client, data):
             if(prevTemp != int(splitData[2])):
                 prevTemp = int(splitData[2])
                 client.publish("sensor01", splitData[2])
-                writelog((" Temp: " + str(splitData[2])))
+                writelog(("Temp: " + str(splitData[2])))
             else:
                 print("Same data")
         else:

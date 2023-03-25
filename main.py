@@ -18,6 +18,8 @@ WAIT = 5
 time.sleep(WAIT)
 while True:  
     if state == INIT or state == MCU_DISCONNECTED:
+        if state == MCU_DISCONNECTED:
+            print("MCU DISCONNECTED")
         while numOfConnectionTry < MCU_MAX_CONNECT_ATTEMP and state != MCU_CONNECTED:
             if time.process_time()-curTime > 3: 
                 print('Connect Attempt Number:'+str(numOfConnectionTry))
@@ -29,6 +31,7 @@ while True:
                 curTime = time.process_time()
         if numOfConnectionTry == MCU_MAX_CONNECT_ATTEMP:
             client.publish("sensor03","MCU ISSUE")
+            print("CAN NOT CONNECT TO MCU!")
             sys.exit(1)
     if state == MCU_CONNECTED:
         if time.process_time() - curTime >= sendPeriod :
