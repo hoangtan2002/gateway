@@ -1,6 +1,10 @@
 import serial.tools.list_ports
 from log import * 
 
+INIT=0
+MCU_CONNECTED=1
+state = INIT
+
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -13,13 +17,25 @@ def getPort():
             commPort = (splitPort[0])
     return "/dev/ttyUSB0"
 
-if getPort()!="None":
-    ser = serial.Serial( port=getPort(), baudrate=9600)
-    print(ser)
-
+def connectSerial():
+    global state, ser
+    try:
+        if getPort()!="None":
+            ser = serial.Serial(port=getPort(), baudrate=9600)
+            writelog("MCU CONNECTED!")
+            print(ser)
+            return 0
+    except:
+        writelog("CONNECTION ISSUE!")
+        return 1
+        
 mess = ""
 def readSerial(client):
-    bytesToRead = ser.inWaiting()
+    try:
+        bytesToRead = ser.inWaiting()
+    except:
+        client.publish("sensor03", "MCU DISCONNECTED")
+        return 1
     if (bytesToRead > 0):
         global mess
         mess = mess + ser.read(bytesToRead).decode("UTF-8")
@@ -31,6 +47,7 @@ def readSerial(client):
                 mess = ""
             else:
                 mess = mess[end+1:]
+    return 0
                 
 def processData(client, data):
     data = data.replace("!", "")
@@ -40,12 +57,14 @@ def processData(client, data):
     if len(splitData) < 2:
         return
     if splitData[1]=='T':
-        writelog((" Temp: " + str(splitData[2])))
-        if int(splitData[2]) > 0 and int(splitData[2]) < 50:
+        if int(splitData[2]) < 50:
             writeData('!OK#')
             client.publish("sensor01", splitData[2])
+            writelog((" Temp: " + str(splitData[2])))
         else:
-            print("DATA ISSUE!")
+            print("SENSOR ISSUE!")
+            writelog("SENSOR ISSUE")
+            
     # elif splitData[1]=='H':
     #     client.publish("sensor02", splitData[2])
     #     writelog((" Humidity: " + str(splitData[2])))

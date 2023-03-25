@@ -1,68 +1,30 @@
 import sys
-from Adafruit_IO import MQTTClient
 import time
 import random
-#from simple_ai import *
 from uart import *
+from MQTT import *
 #INFO
-KEYFILE = open("./keyed_file", "r")
-AIO_FEED_ID = ["button01", "button02"]
-AIO_USERNAME = KEYFILE.readline().strip()
-AIO_KEY = KEYFILE.readline().strip()
 
-def connected(client):
-    for topic in AIO_FEED_ID:
-        client.subscribe(topic)
-    print("Ket noi thanh cong ...")
+numOfConnectionTry = 0
+state = 1
 
-def subscribe(client , userdata , mid , granted_qos):
-    print("Subscribe thanh cong ...")
+while numOfConnectionTry < 3 and state == 1:
+    print('Connect Attempt Number'+str(numOfConnectionTry))
+    state = connectSerial()
+    if state == 1:
+        numOfConnectionTry = numOfConnectionTry+1
+        time.sleep(10)
 
-def disconnected(client):
-    print("Ngat ket noi ...")
-    sys.exit (1)
-
-def message(client , feed_id , payload):
-    print("Nhan du lieu: " + payload)
-    if feed_id == "button01":
-        if payload == "0":
-            writeData("1")
-        else: 
-            writeData("2")
-    if feed_id == "button02":
-        if payload == "0":
-            writeData("3")
-        else: 
-            writeData("4")
-
-client = MQTTClient(AIO_USERNAME , AIO_KEY)
-client.on_connect = connected
-client.on_disconnect = disconnected
-client.on_message = message
-client.on_subscribe = subscribe
-client.connect()
-client.loop_background()
-counter = 10
-
+if state == 1:
+    client.publish("sensor03","MCU ISSUE")
+    exit(1)
+    
 curTime = time.process_time()
+
 while True:
-    #counter = counter - 1
-    #if counter == 0: 
-        # #Random val
-        # #temp = random.randint(30,40)
-        # #humid = random.randint(50, 80)
-        # #lightval = random.randint(200, 400)
-        #ai_result = SuperAI()
-        # #publish val
-        # client.publish("sensor01", temp)
-        # client.publish("sensor02", humid)
-        # client.publish("sensor03", lightval)
-        # client.publish("ai", ai_result)
-        #counter = 10
-    if time.process_time() - curTime >= 90 :
+    if time.process_time() - curTime >= 10 :
         writeData('!RST#')
         curTime = time.process_time()
-    readSerial(client)
-    #
-    #time.sleep(1)
+    if readSerial(client):
+        break
     pass
