@@ -22,7 +22,10 @@ def getPort():
 def connectSerial():
     global state, ser
     if getPort()!="None":
-        ser = serial.Serial(port=getPort(), baudrate=9600)
+        try:
+            ser = serial.Serial(port=getPort(), baudrate=9600)
+        except:
+            return MCU_DISCONNECTED
         writelog("MCU CONNECTED!")
         print(ser)
         return MCU_CONNECTED

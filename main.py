@@ -26,6 +26,7 @@ while True:
                     numOfConnectionTry = numOfConnectionTry+1
                 else: 
                     numOfConnectionTry = 0
+                curTime = time.process_time()
         if numOfConnectionTry == MCU_MAX_CONNECT_ATTEMP:
             client.publish("sensor03","MCU ISSUE")
             sys.exit(1)
