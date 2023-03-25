@@ -3,6 +3,8 @@ from log import *
 INIT=0
 MCU_CONNECTED=1
 MCU_DISCONNECTED=0
+MCU_MAX_CONNECT_ATTEMP=3
+
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -10,10 +12,11 @@ def getPort():
     for i in range(0, N):
         port = ports[i]
         strPort = str(port)
-        if "USB Serial Device" in strPort:
+        if "ttyUSB" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
-    return "/dev/ttyUSB0"
+            print(splitPort[0])
+    return commPort
 
 def connectSerial():
     global state, ser

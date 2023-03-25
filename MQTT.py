@@ -7,11 +7,17 @@ AIO_FEED_ID = ["button01", "button02"]
 AIO_USERNAME = KEYFILE.readline().strip()
 AIO_KEY = KEYFILE.readline().strip()
 #CONSTANT
+isConnectedSuccessfully = 0
+
+def isConnected():
+    return isConnectedSuccessfully
 
 def connected(client):
+    global isConnectedSuccessfully
     for topic in AIO_FEED_ID:
         client.subscribe(topic)
     print("Ket noi thanh cong ...")
+    isConnectedSuccessfully = 1
 
 def subscribe(client , userdata , mid , granted_qos):
     print("Subscribe thanh cong ...")
@@ -38,5 +44,9 @@ client.on_connect = connected
 client.on_disconnect = disconnected
 client.on_message = message
 client.on_subscribe = subscribe
-client.connect()
+try:
+    client.connect()
+except:
+    writelog("NO INTERNET CONNECTION")
+    exit(1)
 client.loop_background()
