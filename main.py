@@ -30,9 +30,10 @@ while True:
             client.publish("sensor03","MCU ISSUE")
             sys.exit(1)
     if state == MCU_CONNECTED:
-        if time.process_time() - curTime >= 5 :
+        if time.process_time() - curTime >= sendPeriod :
             writeData('!RST#')
             curTime = time.process_time()
+            sendPeriod = getSendPeriod()
             sendPeriod = getSendPeriod()
     state=readSerial(client)
     pass
