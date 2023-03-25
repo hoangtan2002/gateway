@@ -4,7 +4,6 @@ INIT=0
 MCU_CONNECTED=1
 MCU_DISCONNECTED=0
 MCU_MAX_CONNECT_ATTEMP=3
-global state
 
 def getPort():
     ports = serial.tools.list_ports.comports()
@@ -16,6 +15,7 @@ def getPort():
         if "ttyUSB" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
+            print(splitPort[0])
     return commPort
 
 def connectSerial():
@@ -27,7 +27,7 @@ def connectSerial():
         return MCU_CONNECTED
     else:
         writelog("CONNECTION ISSUE!")
-        return MCU_DISCONNECTED
+        return INIT
         
 mess = ""
 
@@ -35,6 +35,8 @@ def readSerial(client):
     try:
         bytesToRead = ser.inWaiting()
     except:
+        client.publish("sensor03", "MCU DISCONNECTED")
+        writelog("MCU DISCONNECTED")
         return MCU_DISCONNECTED
     if (bytesToRead > 0):
         global mess
@@ -47,7 +49,7 @@ def readSerial(client):
                 mess = ""
             else:
                 mess = mess[end+1:]
-        return MCU_CONNECTED
+    return MCU_CONNECTED
                 
 def processData(client, data):
     data = data.replace("!", "")
