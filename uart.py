@@ -76,7 +76,7 @@ def processData(client, data):
                 client.publish('sensor02', str(currentHumid))
                 writelog(("Temp: " + str(currentTemp)))
             else:
-                writelof("Same temp data")
+                writelog("Same temp data")
                 print("Same Temp data")
         else:
             print("SENSOR ISSUE!")
