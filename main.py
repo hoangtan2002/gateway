@@ -34,9 +34,12 @@ while True:
             print("CAN NOT CONNECT TO MCU!")
             sys.exit(1)
     if state == MCU_CONNECTED:
-        if time.process_time() - curTime >= sendPeriod :
-            writeData('!RST#')
+        if getIsCollectedData()==0:
+            if time.process_time() - curTime >= sendPeriod :
+                writeData('!RST#')
+                curTime = time.process_time()
+        else:
             curTime = time.process_time()
-            sendPeriod = getSendPeriod()
+        sendPeriod = getSendPeriod()
     state=readSerial(client)
     pass

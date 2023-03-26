@@ -11,6 +11,9 @@ currentTemp = 0
 currentHumid = 0
 isCollectedData = 0
 
+def getIsCollectedData():
+    return isCollectedData
+
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
