@@ -76,7 +76,8 @@ def processData(client, data):
                 client.publish('sensor02', str(currentHumid))
                 writelog(("Temp: " + str(currentTemp)))
             else:
-                print("Same data")
+                writelof("Same temp data")
+                print("Same Temp data")
         else:
             print("SENSOR ISSUE!")
             writelog("SENSOR ISSUE")
@@ -89,7 +90,8 @@ def processData(client, data):
                 writelog(("Humid: " + str(splitData[2])))
                 isCollectedData += 1
             else:
-                print("Same data")
+                print("Same humid data")
+                writelog("Same humid data")
         else:
             print("SENSOR ISSUE!")
             writelog("SENSOR ISSUE") 
