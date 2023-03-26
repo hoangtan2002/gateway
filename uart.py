@@ -6,6 +6,8 @@ MCU_DISCONNECTED=2
 MCU_MAX_CONNECT_ATTEMP=3
 global state
 prevTemp = 0
+prevHumid = 0
+isCollectedData = 0
 
 def getPort():
     ports = serial.tools.list_ports.comports()
@@ -56,7 +58,7 @@ def readSerial(client):
     return MCU_CONNECTED
                 
 def processData(client, data):
-    global prevTemp
+    global prevTemp, prevHumid, isCollectedData
     data = data.replace("!", "")
     data = data.replace("#", "")
     splitData = data.split(":")
@@ -64,17 +66,32 @@ def processData(client, data):
     if len(splitData) < 2:
         return
     if splitData[1]=='T':
-        if int(splitData[2]) < 50:
-            writeData('!OK#')
-            if(prevTemp != int(splitData[2])):
-                prevTemp = int(splitData[2])
-                client.publish("sensor01", splitData[2])
+        if float(splitData[2]) < 50:
+            if(prevTemp != float(splitData[2])):
+                prevTemp = float(splitData[2])
+                isCollectedData += 1
                 writelog(("Temp: " + str(splitData[2])))
             else:
                 print("Same data")
         else:
             print("SENSOR ISSUE!")
             writelog("SENSOR ISSUE")
+    elif splitData[1]=='H':
+        if float(splitData[2]) < 100:
+            if(prevHumid != float(splitData[2])):
+                prevHumid = float(splitData[2])
+                writelog(("Temp: " + str(splitData[2])))
+                isCollectedData += 1
+            else:
+                print("Same data")
+        else:
+            print("SENSOR ISSUE!")
+            writelog("SENSOR ISSUE") 
+    if( isCollectedData==2 ):
+        isCollectedData=0
+        client.publish('sensor01', str(prevTemp))
+        client.publish('sensor02', str(prevHumid))
+        writeData('!OK#')
             
     # elif splitData[1]=='H':
     #     client.publish("sensor02", splitData[2])
