@@ -70,11 +70,11 @@ def processData(client, data):
     if splitData[1]=='T':
         currentTemp = float(splitData[2])
         if currentTemp < 50:
+            writelog(("Temp: " + str(currentTemp)))
+            isCollectedData += 1
             if(prevTemp != currentTemp):
                 prevTemp = currentTemp
-                isCollectedData += 1
                 client.publish('sensor02', str(currentHumid))
-                writelog(("Temp: " + str(currentTemp)))
             else:
                 writelog("Same temp data")
                 print("Same Temp data")
@@ -83,19 +83,19 @@ def processData(client, data):
             writelog("SENSOR ISSUE")
     elif splitData[1]=='H':
         currentHumid = float(splitData[2])
-        if float(splitData[2]) < 100:
+        if currentHumid <= 100:
+            writelog(("Humid: " + str(splitData[2])))
+            isCollectedData += 1
             if(prevHumid != currentHumid):
                 prevHumid = currentHumid
                 client.publish('sensor02', str(currentTemp))
-                writelog(("Humid: " + str(splitData[2])))
-                isCollectedData += 1
             else:
                 print("Same humid data")
-                writelog("Same humid data")
         else:
             print("SENSOR ISSUE!")
             writelog("SENSOR ISSUE") 
     if(isCollectedData==2):
+        writelog("2 data point collected")
         isCollectedData=0
         writeData('!OK#')
             
