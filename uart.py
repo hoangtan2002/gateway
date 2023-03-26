@@ -7,6 +7,8 @@ MCU_MAX_CONNECT_ATTEMP=3
 global state
 prevTemp = 0
 prevHumid = 0
+currentTemp = 0
+currentHumid = 0
 isCollectedData = 0
 
 def getPort():
@@ -58,7 +60,7 @@ def readSerial(client):
     return MCU_CONNECTED
                 
 def processData(client, data):
-    global prevTemp, prevHumid, isCollectedData
+    global prevTemp, prevHumid, isCollectedData, currentTemp, currentHumid
     data = data.replace("!", "")
     data = data.replace("#", "")
     splitData = data.split(":")
@@ -66,20 +68,24 @@ def processData(client, data):
     if len(splitData) < 2:
         return
     if splitData[1]=='T':
-        if float(splitData[2]) < 50:
-            if(prevTemp != float(splitData[2])):
-                prevTemp = float(splitData[2])
+        currentTemp = float(splitData[2])
+        if currentTemp < 50:
+            if(prevTemp != currentTemp):
+                prevTemp = currentTemp
                 isCollectedData += 1
-                writelog(("Temp: " + str(splitData[2])))
+                client.publish('sensor02', str(currentHumid))
+                writelog(("Temp: " + str(currentTemp)))
             else:
                 print("Same data")
         else:
             print("SENSOR ISSUE!")
             writelog("SENSOR ISSUE")
     elif splitData[1]=='H':
+        currentHumid = float(splitData[2])
         if float(splitData[2]) < 100:
-            if(prevHumid != float(splitData[2])):
-                prevHumid = float(splitData[2])
+            if(prevHumid != currentHumid):
+                prevHumid = currentHumid
+                client.publish('sensor02', str(currentTemp))
                 writelog(("Humid: " + str(splitData[2])))
                 isCollectedData += 1
             else:
@@ -89,8 +95,6 @@ def processData(client, data):
             writelog("SENSOR ISSUE") 
     if(isCollectedData==2):
         isCollectedData=0
-        client.publish('sensor01', str(prevTemp))
-        client.publish('sensor02', str(prevHumid))
         writeData('!OK#')
             
     # elif splitData[1]=='H':
