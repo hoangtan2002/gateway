@@ -1,4 +1,5 @@
-from Adafruit_IO import MQTTClient
+#from Adafruit_IO import MQTTClient
+import paho.mqtt.client as mqtt
 import sys
 from uart import *
 
@@ -10,54 +11,64 @@ AIO_KEY = KEYFILE.readline().strip()
 isConnectedSuccessfully = 0
 sendPeriod = 10
 
+for i in range(len(AIO_FEED_ID)):
+    AIO_FEED_ID[i]= AIO_USERNAME+"/feeds/"+AIO_FEED_ID[i]
+
+print(AIO_FEED_ID)
 def isConnected():
     return isConnectedSuccessfully
 
 def getSendPeriod():
     return sendPeriod
 
-def connected(client):
+def connected(client, userdata, flags, rc):
     global isConnectedSuccessfully
     for topic in AIO_FEED_ID:
         client.subscribe(topic)
+    print(flags)
+    print(rc)
     print("Ket noi thanh cong ...")
     isConnectedSuccessfully = 1
 
 def subscribe(client , userdata , mid , granted_qos):
     print("Subscribe thanh cong ...")
 
-def disconnected(client):
+def disconnected(client, userdata, rc):
     print("Ngat ket noi ...")
     sys.exit (1)
 
-def message(client , feed_id , payload):
+def message(client , userdata, message):
     global sendPeriod
-    print("Nhan du lieu: " + payload)
-    if feed_id == "button01":
-        if payload == "0":
-            writeData("1")
+    decodedPayload = message.payload.decode()
+    print("Nhan du lieu: " + decodedPayload)
+    if "button01" in  message.topic:
+        if  decodedPayload == "0":
+            writeData("!OFF1")
         else: 
-            writeData("2")
-    if feed_id == "button02":
-        if payload == "0":
-            writeData("3")
+            writeData("!ON1")
+    if "button02" in message.topic:
+        if  decodedPayload == "0":
+            writeData("!OFF2")
         else: 
-            writeData("4")
-    if feed_id == "freq":
-        data = payload.split(":")
+            writeData("!ON2#")
+    if "freq" in message.topic:
+        data = decodedPayload.split(":")
         if(len(data) == 1): return
         else:
             sendPeriod = int(data[1])
             print(sendPeriod)
 
-client = MQTTClient(AIO_USERNAME , AIO_KEY)
+client = mqtt.Client()
+client.username_pw_set(username=AIO_USERNAME, password=AIO_KEY)
+client.user_data_set()
+client.will_set("duytan2002/feeds/sensor03", payload="dit me thang cho ca phe", qos=1, retain=True)
 client.on_connect = connected
 client.on_disconnect = disconnected
 client.on_message = message
 client.on_subscribe = subscribe
 try:
-    client.connect()
+    client.connect("io.adafruit.com", 1883, 10)
 except:
     writelog("NO INTERNET CONNECTION")
     exit(1)
-client.loop_background()
+client.loop_start()

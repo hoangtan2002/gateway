@@ -47,7 +47,7 @@ def readSerial(client):
     try:
         bytesToRead = ser.inWaiting()
     except:
-        client.publish('sensor03',"MCU DISCONNECTED")
+        client.publish('/duytan2002/feeds/sensor03',"MCU DISCONNECTED")
         return MCU_DISCONNECTED
     if (bytesToRead > 0):
         global mess
@@ -77,7 +77,7 @@ def processData(client, data):
             isCollectedData += 1
             if(prevTemp != currentTemp):
                 prevTemp = currentTemp
-                client.publish('sensor02', str(currentHumid))
+                client.publish("duytan2002/feeds/sensor01", str(currentTemp))
             else:
                 writelog("Same temp data")
                 print("Same Temp data")
@@ -91,7 +91,7 @@ def processData(client, data):
             isCollectedData += 1
             if(prevHumid != currentHumid):
                 prevHumid = currentHumid
-                client.publish('sensor02', str(currentTemp))
+                client.publish("duytan2002/feeds/sensor02", str(currentHumid))
             else:
                 print("Same humid data")
         else:
@@ -101,13 +101,6 @@ def processData(client, data):
         writelog("2 data point collected")
         isCollectedData=0
         writeData('!OK#')
-            
-    # elif splitData[1]=='H':
-    #     client.publish("sensor02", splitData[2])
-    #     writelog((" Humidity: " + str(splitData[2])))
-    # else:
-    #     client.publish("sensor03", splitData[2])
-    #     writelog((" Lumi: " + str(splitData[2])))
- 
+
 def writeData(data):
     ser.write(str(data).encode())
