@@ -60,8 +60,7 @@ def message(client , userdata, message):
 
 client = mqtt.Client()
 client.username_pw_set(username=AIO_USERNAME, password=AIO_KEY)
-client.user_data_set()
-client.will_set("duytan2002/feeds/sensor03", payload="dit me thang cho ca phe", qos=1, retain=True)
+client.will_set("duytan2002/feeds/connectcheck", payload=0, qos=0, retain=True)
 client.on_connect = connected
 client.on_disconnect = disconnected
 client.on_message = message

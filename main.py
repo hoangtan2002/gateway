@@ -27,7 +27,7 @@ while True:
                 if state == INIT or state == MCU_DISCONNECTED:
                     numOfConnectionTry = numOfConnectionTry+1
                 else: 
-                    client.publish("duytan2002/feeds/sensor03","MCU CONNECTED")
+                    client.publish("duytan2002/feeds/sensor03","MCU CONNECTED",0,True)
                     numOfConnectionTry = 0
                 curTime = time.process_time()
         if numOfConnectionTry == MCU_MAX_CONNECT_ATTEMP:

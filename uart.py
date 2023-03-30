@@ -47,7 +47,7 @@ def readSerial(client):
     try:
         bytesToRead = ser.inWaiting()
     except:
-        client.publish('/duytan2002/feeds/sensor03',"MCU DISCONNECTED")
+        client.publish('duytan2002/feeds/sensor03',"MCU DISCONNECTED")
         return MCU_DISCONNECTED
     if (bytesToRead > 0):
         global mess
