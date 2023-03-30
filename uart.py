@@ -72,38 +72,22 @@ def processData(client, data):
     print(splitData)
     if len(splitData) < 2:
         return
-    if splitData[1]=='T':
-        currentTemp = float(splitData[2])
-        if currentTemp < 50:
-            writelog(("Temp: " + str(currentTemp)))
-            isCollectedData += 1
-            if(prevTemp != currentTemp):
-                prevTemp = currentTemp
-                client.publish("duytan2002/feeds/sensor01", str(currentTemp))
-            else:
-                writelog("Same temp data")
-                print("Same Temp data")
-        else:
-            print("SENSOR ISSUE!")
-            writelog("SENSOR ISSUE")
-    elif splitData[1]=='H':
+    if splitData[0]=='D':
+        currentTemp = float(splitData[1])
         currentHumid = float(splitData[2])
-        if currentHumid <= 100:
-            writelog(("Humid: " + str(splitData[2])))
-            isCollectedData += 1
-            if(prevHumid != currentHumid):
-                prevHumid = currentHumid
-                client.publish("duytan2002/feeds/sensor02", str(currentHumid))
-            else:
-                print("Same humid data")
+        if not (currentTemp > 60 and currentHumid < 50):
+            writecsv(currentTemp, currentHumid)
+            writelog("TEMP: " + str(currentTemp) + "HUMID: " + str(currentHumid))
+            client.publish("duytan2002/feeds/sensor02", str(currentHumid))
+            client.publish("duytan2002/feeds/sensor01", str(currentTemp))
+            writeData("!OK#")
         else:
-            print("SENSOR ISSUE!")
-            writelog("SENSOR ISSUE") 
-    if(isCollectedData==2):
-        writelog("2 data point collected")
-        writecsv(currentHumid, currentTemp)
-        isCollectedData=0
-        writeData('!OK#')
+            return
+        if(currentTemp!=prevTemp):
+            prevTemp = currentTemp
+        if(currentHumid!=prevHumid):
+            prevHumid = currentHumid
+
 
 def writeData(data):
     ser.write(str(data).encode())
