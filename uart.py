@@ -1,5 +1,7 @@
 import serial.tools.list_ports
 from log import * 
+from writecsv import *
+
 INIT=0
 MCU_CONNECTED=1
 MCU_DISCONNECTED=2
@@ -99,6 +101,7 @@ def processData(client, data):
             writelog("SENSOR ISSUE") 
     if(isCollectedData==2):
         writelog("2 data point collected")
+        writecsv(currentHumid, currentTemp)
         isCollectedData=0
         writeData('!OK#')
 
