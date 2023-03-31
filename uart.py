@@ -78,14 +78,14 @@ def processData(client, data):
         if not (currentTemp > 60 and currentHumid < 50):
             writecsv(currentTemp, currentHumid)
             writelog("TEMP: " + str(currentTemp) + "HUMID: " + str(currentHumid))
-            client.publish("duytan2002/feeds/sensor02", str(currentHumid))
-            client.publish("duytan2002/feeds/sensor01", str(currentTemp))
             writeData("!OK#")
         else:
             return
         if(currentTemp!=prevTemp):
+            client.publish("duytan2002/feeds/sensor02", str(currentHumid))
             prevTemp = currentTemp
         if(currentHumid!=prevHumid):
+            client.publish("duytan2002/feeds/sensor01", str(currentTemp))
             prevHumid = currentHumid
 
 
