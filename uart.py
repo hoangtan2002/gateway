@@ -16,6 +16,8 @@ currentTemp = 0
 currentHumid = 0
 isCollectedData = 0
 
+errorList = ['SENSOR ISSUE']
+
 def connectAttemp(state, client):
     global curTime, numOfConnectionTry
     if state == MCU_DISCONNECTED:
@@ -95,12 +97,12 @@ def processData(client, data):
     print(splitData)
     if len(splitData) < 2:
         return
-    if splitData[0]=='D':
+    if splitData[0]=='OK':
         currentTemp = float(splitData[1])
         currentHumid = float(splitData[2])
         if not (currentTemp > 60 and currentHumid < 50):
             writecsv(currentTemp, currentHumid)
-            writelog("TEMP: " + str(currentTemp) + "HUMID: " + str(currentHumid))
+            writelog("TEMP: " + str(currentTemp) + " HUMID: " + str(currentHumid))
             writeData("!OK#")
         else:
             return

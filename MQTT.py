@@ -56,6 +56,8 @@ def message(client , userdata, message):
         if(len(data) == 1): return
         else:
             sendPeriod = int(data[1])
+            if(sendPeriod < 3):
+                sendPeriod = 3
             print(sendPeriod)
 
 client = mqtt.Client()
