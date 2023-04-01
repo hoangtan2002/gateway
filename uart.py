@@ -1,18 +1,41 @@
 import serial.tools.list_ports
 from log import * 
 from writecsv import *
+import time
+import sys
+curTime = time.process_time()
 
+numOfConnectionTry = 0
 INIT=0
 MCU_CONNECTED=1
 MCU_DISCONNECTED=2
 MCU_MAX_CONNECT_ATTEMP=3
-global state
 prevTemp = 0
 prevHumid = 0
 currentTemp = 0
 currentHumid = 0
 isCollectedData = 0
 
+def connectAttemp(state, client):
+    global curTime, numOfConnectionTry
+    if state == MCU_DISCONNECTED:
+        print("MCU DISCONNECTED")
+    while numOfConnectionTry < MCU_MAX_CONNECT_ATTEMP and state != MCU_CONNECTED:
+        if time.process_time()-curTime > 3: 
+            print('MCU Connect Attempt Number:'+str(numOfConnectionTry))
+            state = connectSerial()
+            if state == INIT or state == MCU_DISCONNECTED:
+                numOfConnectionTry = numOfConnectionTry+1
+            else: 
+                client.publish("duytan2002/feeds/sensor03","MCU CONNECTED",0,True)
+                numOfConnectionTry = 0
+                return MCU_CONNECTED
+            curTime = time.process_time()
+    if numOfConnectionTry == MCU_MAX_CONNECT_ATTEMP:
+        client.publish("duytan2002/feeds/sensor03","MCU ISSUE")
+        print("CAN NOT CONNECT TO MCU!")
+        sys.exit(1)
+        
 def getIsCollectedData():
     return isCollectedData
 
