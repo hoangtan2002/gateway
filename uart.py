@@ -21,6 +21,9 @@ isCollectedData = 0
 
 errorList = ['SENSOR ISSUE']
 
+def checkIntregity():
+    print("Checksum matched!")
+
 def connectAttemp(state, client):
     global curTime, numOfConnectionTry
     if state == MCU_DISCONNECTED:
