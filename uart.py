@@ -3,6 +3,9 @@ from log import *
 from writecsv import *
 import time
 import sys
+
+MCUver = ''
+MCUfirmwareVer = ''
 curTime = time.process_time()
 
 numOfConnectionTry = 0
@@ -31,6 +34,8 @@ def connectAttemp(state, client):
             else: 
                 client.publish("duytan2002/feeds/sensor03","MCU CONNECTED",0,True)
                 numOfConnectionTry = 0
+                writeData('!VER#')
+                readSerial(client)
                 return MCU_CONNECTED
             curTime = time.process_time()
     if numOfConnectionTry == MCU_MAX_CONNECT_ATTEMP:
@@ -112,6 +117,10 @@ def processData(client, data):
         if(currentHumid!=prevHumid):
             client.publish("duytan2002/feeds/sensor01", str(currentTemp))
             prevHumid = currentHumid
+    elif splitData[0] == 'VER':
+        MCUver = splitData[1]
+        MCUfirmwareVer = splitData[2]
+        writelog('MCU Version: ' + MCUver + ' MCU Firmware Version: ' + MCUfirmwareVer)
 
 
 def writeData(data):

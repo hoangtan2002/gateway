@@ -10,3 +10,5 @@ def uartTest():
     writeData('!RST#')
     state = readSerial()
     print(state)
+
+uartTest()
