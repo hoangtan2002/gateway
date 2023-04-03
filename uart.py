@@ -34,8 +34,6 @@ def checkIntegrity(string):
         if numofDelimiter == 3:
             break
         calcSum += ord(string[i])
-    print(calcSum)
-    print(receivedSum)
     if calcSum != receivedSum:
         return 0
     else:
