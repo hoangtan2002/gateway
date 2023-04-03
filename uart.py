@@ -21,6 +21,28 @@ isCollectedData = 0
 
 errorList = ['SENSOR ISSUE']
 
+def checkIntegrity(string):
+    receivedList = string.split(":")
+    if(len(receivedList) < 4):
+        return 1
+    receivedSum = int(receivedList[len(receivedList)-1])
+    calcSum = 0
+    numofDelimiter = 0
+    for i in range(len(string)):
+        if string[i] == ':':
+            numofDelimiter+=1
+        if numofDelimiter == 3:
+            break
+        calcSum += ord(string[i])
+    print(calcSum)
+    print(receivedSum)
+    if calcSum != receivedSum:
+        return 0
+    else:
+        return 1
+            
+    
+
 def checkIntregity():
     print("Checksum matched!")
 
@@ -104,6 +126,9 @@ def processData(client, data):
     splitData = data.split(":")
     print(splitData)
     if len(splitData) < 2:
+        return
+    if not checkIntegrity(data):
+        writelog("Checksum Mismatch!")
         return
     if splitData[0]=='OK':
         currentTemp = float(splitData[1])
