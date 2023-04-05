@@ -29,6 +29,8 @@ def connected(client, userdata, flags, rc):
     print(rc)
     print("Ket noi thanh cong ...")
     isConnectedSuccessfully = 1
+    client.publish("duytan2002/feeds/freq", str(sendPeriod))
+    
 
 def subscribe(client , userdata , mid , granted_qos):
     print("Subscribe thanh cong ...")
@@ -52,13 +54,8 @@ def message(client , userdata, message):
         else: 
             writeData("!ON2#")
     if "freq" in message.topic:
-        data = decodedPayload.split(":")
-        if(len(data) == 1): return
-        else:
-            sendPeriod = int(data[1])
-            if(sendPeriod < 3):
-                sendPeriod = 3
-            print(sendPeriod)
+        sendPeriod = int(decodedPayload)
+        print("New send period: " + decodedPayload)
 
 client = mqtt.Client()
 client.username_pw_set(username=AIO_USERNAME, password=AIO_KEY)
