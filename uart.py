@@ -143,11 +143,13 @@ def processData(client, data):
         if(currentHumid!=prevHumid):
             client.publish("duytan2002/feeds/sensor01", str(currentTemp))
             prevHumid = currentHumid
+    elif splitData[0]=='ERR':
+        client.publish("duytan2002/feeds/sensor03", "SENSOR ISSUE!")
+        writelog("SENSOR ISSUE!")
     elif splitData[0] == 'VER':
         MCUver = splitData[1]
         MCUfirmwareVer = splitData[2]
         writelog('MCU Version: ' + MCUver + ' MCU Firmware Version: ' + MCUfirmwareVer)
-
 
 def writeData(data):
     ser.write(str(data).encode())
