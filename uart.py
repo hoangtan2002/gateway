@@ -39,8 +39,6 @@ def checkIntegrity(string):
     else:
         return 1
             
-    
-
 def checkIntregity():
     print("Checksum matched!")
 

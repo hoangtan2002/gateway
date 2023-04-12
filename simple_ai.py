@@ -39,5 +39,5 @@ def SuperAI():
     # Print prediction and confidence score
     #print("Class:", class_name[2:], end="")
     #print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
-    result = "Class: " + class_name[2:]
+    result = class_name[2:]
     return result

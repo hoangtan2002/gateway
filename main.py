@@ -3,6 +3,7 @@ import time
 import random
 from uart import *
 from MQTT import *
+from simple_ai import *
 #INFO
 
 sendPeriod = 10
@@ -11,6 +12,7 @@ MCU_CONNECTED=1
 MCU_DISCONNECTED=2
 state = INIT
 curTime = time.process_time()
+aiTime = time.process_time()
 WAIT = 5      
 # while not isConnected():
 #     print()       
@@ -24,4 +26,9 @@ while True:
             curTime = time.process_time()
     sendPeriod = getSendPeriod()
     state=readSerial(client)
+    if time.process_time() - aiTime > 30:
+        aiResult = SuperAI()
+        if(aiResult!=""):
+            client.publish("duytan2002/feeds/ai", aiResult)
+        aiTime = time.process_time()
     pass
