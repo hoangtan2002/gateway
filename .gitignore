@@ -1,6 +1,7 @@
 keyed_file
 keras*
 __pycache__/*.pyc
+unittest/__pycache__/*.pyc
 labels.txt
 log.txt
 *.csv

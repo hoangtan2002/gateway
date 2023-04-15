@@ -39,9 +39,6 @@ def checkIntegrity(string):
     else:
         return 1
             
-def checkIntregity():
-    print("Checksum matched!")
-
 def connectAttemp(state, client):
     global curTime, numOfConnectionTry
     if state == MCU_DISCONNECTED:

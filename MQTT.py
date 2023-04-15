@@ -42,15 +42,15 @@ def disconnected(client, userdata, rc):
 def message(client , userdata, message):
     global sendPeriod
     decodedPayload = message.payload.decode()
-    print("Nhan du lieu: " + decodedPayload)
+    print("Nhan du lieu: " + decodedPayload + " type" + str(type(decodedPayload)))
     if "button01" in  message.topic:
-        if  decodedPayload == "0":
-            writeData("!OFF1")
+        if  decodedPayload == '0':
+            writeData("!OFF1#")
         else: 
-            writeData("!ON1")
+            writeData("!ON1#")
     if "button02" in message.topic:
-        if  decodedPayload == "0":
-            writeData("!OFF2")
+        if  decodedPayload == '0':
+            writeData("!OFF2#")
         else: 
             writeData("!ON2#")
     if "freq" in message.topic:
