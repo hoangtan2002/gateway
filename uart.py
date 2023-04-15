@@ -74,6 +74,7 @@ def getPort():
         if "ttyUSB" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
+    print(commPort)
     return commPort
 
 def connectSerial():
