@@ -58,8 +58,8 @@ def predict():
 
     # Select the best predicted value for temperature and humidity
     best_predict = test_predict[-1, :]
-    best_predict_temperature = str(best_predict[0])
-    best_predict_humidity = str(best_predict[1])
+    best_predict_temperature = str(round(best_predict[0],2))
+    best_predict_humidity = str(round(best_predict[1],2))
     
     return (best_predict_temperature , best_predict_humidity)
 
