@@ -3,7 +3,8 @@ import time
 import random
 from uart import *
 from MQTT import *
-from simple_ai import *
+from recognitionAI import *
+from predictAI import *
 #INFO
 
 sendPeriod = 10
@@ -14,6 +15,7 @@ state = INIT
 curTime = time.process_time()
 aiTime = time.process_time()
 WAIT = 5      
+predictTime = time.process_time()
 # while not isConnected():
 #     print()       
 time.sleep(WAIT)
@@ -31,4 +33,9 @@ while True:
         if(aiResult!=""):
             client.publish("duytan2002/feeds/ai", aiResult)
         aiTime = time.process_time()
+    if time.process_time() - predictTime > 45:
+        predictedTemp, predictedHumid = predict()
+        client.publish("duytan2002/feeds/predictedtemp",predictedTemp)
+        client.publish("duytan2002/feeds/predictedhumid",predictedHumid)
+        predictTime = time.process_time()
     pass
