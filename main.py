@@ -16,9 +16,8 @@ curTime = time.process_time()
 aiTime = time.process_time()
 WAIT = 5      
 predictTime = time.process_time()
-# while not isConnected():
-#     print()       
 time.sleep(WAIT)
+        
 while True:  
     if state == INIT or state == MCU_DISCONNECTED:
         state = connectAttemp(state, client)
