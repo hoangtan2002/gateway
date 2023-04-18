@@ -3,6 +3,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import LSTM, Dense
 import time
+from MQTT import *
 
 def predict():
     # Load the data
@@ -63,4 +64,13 @@ def predict():
     
     return (best_predict_temperature , best_predict_humidity)
 
-
+def predictionMainloop(event):
+    count = 0
+    while True:
+        event.wait(30)
+        if event.is_set():
+            break
+        predictedTemp, predictedHumid = predict()
+        client.publish("duytan2002/feeds/predictedtemp",predictedTemp)
+        client.publish("duytan2002/feeds/predictedhumid",predictedHumid)
+        pass

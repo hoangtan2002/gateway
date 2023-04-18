@@ -1,7 +1,9 @@
 from keras.models import load_model  # TensorFlow is required for Keras to work
 import cv2  # Install opencv-python
 import numpy as np
-
+import time
+from MQTT import *
+import threading
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
@@ -41,3 +43,17 @@ def SuperAI():
     #print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
     result = class_name[2:]
     return result
+
+def recognitionAiMainLoop(event):
+    count = 0
+    while True:
+        event.wait(45)
+        if event.is_set():
+            break
+        aiResult = SuperAI()
+        if(aiResult!=""):
+            client.publish("duytan2002/feeds/ai", aiResult)
+        count = 0
+
+    pass
+

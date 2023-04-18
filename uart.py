@@ -19,6 +19,8 @@ currentTemp = 0
 currentHumid = 0
 isCollectedData = 0
 
+HOPELESS=99
+
 errorList = ['SENSOR ISSUE']
 
 def checkIntegrity(string):
@@ -59,8 +61,8 @@ def connectAttemp(state, client):
     if numOfConnectionTry == MCU_MAX_CONNECT_ATTEMP:
         client.publish("duytan2002/feeds/sensor03","MCU ISSUE")
         print("CAN NOT CONNECT TO MCU!")
-        sys.exit(1)
-        
+        return HOPELESS
+          
 def getIsCollectedData():
     return isCollectedData
 
