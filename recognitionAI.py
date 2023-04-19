@@ -45,7 +45,6 @@ def SuperAI():
     return result
 
 def recognitionAiMainLoop(event):
-    count = 0
     while True:
         event.wait(45)
         if event.is_set():
@@ -53,7 +52,5 @@ def recognitionAiMainLoop(event):
         aiResult = SuperAI()
         if(aiResult!=""):
             client.publish("duytan2002/feeds/ai", aiResult)
-        count = 0
-
     pass
 

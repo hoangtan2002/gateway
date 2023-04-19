@@ -65,7 +65,6 @@ def predict():
     return (best_predict_temperature , best_predict_humidity)
 
 def predictionMainloop(event):
-    count = 0
     while True:
         event.wait(30)
         if event.is_set():
