@@ -1,6 +1,5 @@
 import sys
 import time
-import random
 from uart import *
 from MQTT import *
 from recognitionAI import *
