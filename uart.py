@@ -129,18 +129,14 @@ def processData(client, data):
     if splitData[0]=='OK':
         currentTemp = float(splitData[1])
         currentHumid = float(splitData[2])
-        if not (currentTemp > 60 and currentHumid < 50):
+        if (currentTemp >= 5 and currentTemp <= 50):
             writecsv(currentTemp, currentHumid)
             writelog("TEMP: " + str(currentTemp) + " HUMID: " + str(currentHumid))
+            client.publish("duytan2002/feeds/sensor02", str(currentHumid))
+            client.publish("duytan2002/feeds/sensor01", str(currentTemp))
             writeData("!OK#")
         else:
             return
-        if(currentTemp!=prevTemp):
-            client.publish("duytan2002/feeds/sensor02", str(currentHumid))
-            prevTemp = currentTemp
-        if(currentHumid!=prevHumid):
-            client.publish("duytan2002/feeds/sensor01", str(currentTemp))
-            prevHumid = currentHumid
     elif splitData[0]=='ERR':
         client.publish("duytan2002/feeds/sensor03", "SENSOR ISSUE!")
         writelog("SENSOR ISSUE!")
