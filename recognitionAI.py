@@ -51,6 +51,6 @@ def recognitionAiMainLoop(event):
             break
         aiResult = SuperAI()
         if(aiResult!=""):
-            client.publish("duytan2002/feeds/ai", aiResult)
+            client.publish("duytan2002/feeds/ai", aiResult.strip())
     pass
 
