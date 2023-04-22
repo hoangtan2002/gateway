@@ -2,11 +2,11 @@
 import paho.mqtt.client as mqtt
 import sys
 from uart import *
+from envParse import *
 
-KEYFILE = open("./keyed_file", "r")
 AIO_FEED_ID = ["button01", "button02", "freq"]
-AIO_USERNAME = KEYFILE.readline().strip()
-AIO_KEY = KEYFILE.readline().strip()
+AIO_USERNAME = getUsername()
+AIO_KEY = getKey()
 #CONSTANT
 isConnectedSuccessfully = 0
 sendPeriod = 10

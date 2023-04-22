@@ -5,3 +5,4 @@ unittest/__pycache__/*.pyc
 labels.txt
 log.txt
 *.csv
+.env
