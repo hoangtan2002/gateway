@@ -45,12 +45,10 @@ def SuperAI():
     return result
 
 def recognitionAiMainLoop(event):
-    while True:
-        event.wait(45)
-        if event.is_set():
-            break
+    while threading.main_thread().is_alive():
         aiResult = SuperAI()
         if(aiResult!=""):
             client.publish("duytan2002/feeds/ai", aiResult.strip())
+        time.sleep(10)
     pass
 

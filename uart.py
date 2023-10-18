@@ -73,7 +73,7 @@ def getPort():
     for i in range(0, N):
         port = ports[i]
         strPort = str(port)
-        if "ttyUSB" in strPort:
+        if "ttyACM" in strPort:
             splitPort = strPort.split(" ")
             commPort = (splitPort[0])
     print(commPort)

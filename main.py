@@ -23,9 +23,9 @@ predictAIevent = threading.Event()
 predictAIThread = threading.Thread(target=lambda:predictionMainloop(predictAIevent))
 predictAIThread.start()
 
-recognitionAiEvent = threading.Event()
-recognitionAiThread = threading.Thread(target=lambda:recognitionAiMainLoop(recognitionAiEvent))
-recognitionAiThread.start()
+# recognitionAiEvent = threading.Event()
+# recognitionAiThread = threading.Thread(target=lambda:recognitionAiMainLoop(recognitionAiEvent))
+# recognitionAiThread.start()
         
 while True:  
     if state == INIT or state == MCU_DISCONNECTED:
@@ -35,8 +35,6 @@ while True:
             writeData('!RST#')
             curTime = time.process_time()
     if state == HOPELESS:
-        recognitionAiEvent.set()
-        predictAIevent.set()
         sys.exit(1)
     sendPeriod = getSendPeriod()
     state=readSerial(client)

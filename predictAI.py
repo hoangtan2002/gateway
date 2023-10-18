@@ -4,6 +4,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense
 import time
 from MQTT import *
+import threading
 
 def predict():
     # Load the data
@@ -13,6 +14,9 @@ def predict():
     humidity = pd.read_json(
         "https://io.adafruit.com/api/v2/duytan2002/feeds/sensor02/data"
     ).value
+    
+    print(temperature)
+    print(humidity)
 
     # Combine the data into a single dataframe
     data = pd.concat([temperature, humidity], axis=1)
@@ -65,11 +69,10 @@ def predict():
     return (best_predict_temperature , best_predict_humidity)
 
 def predictionMainloop(event):
-    while True:
-        event.wait(30)
-        if event.is_set():
-            break
+    while threading.main_thread().is_alive():
         predictedTemp, predictedHumid = predict()
+        print("The prediction is: "+str(predictedHumid) + str(predictedTemp))
         client.publish("duytan2002/feeds/predictedtemp",predictedTemp)
         client.publish("duytan2002/feeds/predictedhumid",predictedHumid)
+        time.sleep(10)
         pass
