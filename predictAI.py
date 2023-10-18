@@ -15,9 +15,6 @@ def predict():
         "https://io.adafruit.com/api/v2/duytan2002/feeds/sensor02/data"
     ).value
     
-    print(temperature)
-    print(humidity)
-
     # Combine the data into a single dataframe
     data = pd.concat([temperature, humidity], axis=1)
     data.columns = ["temperature", "humidity"]
